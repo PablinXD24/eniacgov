@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GovFlow | Mural Comunitário</title>
+    <title>GovFlow | EniacGov</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
@@ -26,7 +26,7 @@
         .blob:nth-child(2) { background: #3b82f6; right: -50px; top: -50px; animation-duration: 25s; }
         @keyframes move { from { transform: translate(0, 0); } to { transform: translate(80px, 80px); } }
 
-        /* Layout */
+        /* Sidebar & Content */
         .sidebar {
             width: 280px; height: 95vh; margin: 2.5vh 20px;
             background: var(--glass); backdrop-filter: blur(25px);
@@ -44,6 +44,7 @@
         .section.active { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* Cards */
         .card { background: rgba(255, 255, 255, 0.3); border: 1px solid var(--glass-border); border-radius: 18px; padding: 1.5rem; margin-bottom: 1.2rem; }
         .btn { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 600; width: 100%; transition: 0.3s; }
         
@@ -59,6 +60,7 @@
             justify-content: center; align-items: center; z-index: 1000;
             flex-direction: column; color: white;
         }
+
         .badge { font-size: 0.7rem; padding: 4px 8px; border-radius: 8px; font-weight: 700; text-transform: uppercase; }
         .status-aberto { background: #fee2e2; color: #991b1b; }
         .status-resolvido { background: #dcfce7; color: #166534; }
@@ -75,27 +77,26 @@
 <body>
 
     <div id="success-overlay">
-        <h1 style="font-size: 4rem;">✅</h1>
-        <h2>Denúncia Registrada!</h2>
-        <p>Seu relato agora está no mural comunitário.</p>
+        <h1 style="font-size: 5rem; margin-bottom: 10px;">✅</h1>
+        <h2>Relato Enviado com Sucesso!</h2>
     </div>
 
     <div class="blob-container"><div class="blob"></div><div class="blob"></div></div>
 
     <aside class="sidebar">
-        <h2 style="margin-bottom: 2rem; color: var(--primary);">GovFlow</h2>
+        <h2 style="margin-bottom: 2rem; color: var(--primary);">EniacGov</h2>
         <div class="nav-link active" onclick="show('feed', this)"><span>📋</span><p>Mural</p></div>
         <div class="nav-link" onclick="show('new', this)"><span>✍️</span><p>Relatar</p></div>
         <div class="nav-link" onclick="show('dash', this)"><span>📊</span><p>Dados</p></div>
-        <div id="adm-nav" class="nav-link" style="color: var(--danger); display: none;" onclick="show('admin', this)"><span>🛡️</span><p>Painel ADM</p></div>
+        <div id="adm-nav" class="nav-link" style="color: var(--danger); display: none;" onclick="show('admin', this)"><span>🛡️</span><p>ADM</p></div>
     </aside>
 
     <main class="main-content">
         <section id="auth" class="section active">
             <div style="max-width: 400px; margin: 60px auto; text-align: center;">
-                <h1>Acesso</h1>
+                <h1>Bem-vindo</h1>
                 <input type="email" id="userEmail" placeholder="Digite seu e-mail">
-                <button class="btn" style="margin-top: 10px;" onclick="handleLogin()">Entrar no Sistema</button>
+                <button class="btn" style="margin-top: 15px;" onclick="handleLogin()">Acessar Mural</button>
             </div>
         </section>
 
@@ -106,20 +107,21 @@
 
         <section id="new" class="section">
             <div class="card">
-                <h2>Relatar Problema</h2>
+                <h2>Novo Relato</h2>
                 <select id="categoria">
                     <option>Iluminação Pública</option>
                     <option>Saneamento Básico</option>
                     <option>Limpeza Urbana</option>
                     <option>Mobilidade Urbana</option>
+                    <option>Saúde</option>
                 </select>
                 <textarea id="descricao" rows="5" placeholder="Descreva o problema para a comunidade..."></textarea>
-                <button class="btn" onclick="sendComplaint()">Enviar Denúncia</button>
+                <button class="btn" onclick="sendComplaint()">Publicar Denúncia</button>
             </div>
         </section>
 
         <section id="admin" class="section">
-            <h2>Gestão Governamental</h2>
+            <h2>Painel de Gestão ADM</h2>
             <div class="card" style="overflow-x: auto;">
                 <table style="width: 100%; border-collapse: collapse;">
                     <thead><tr style="text-align: left; opacity: 0.6;"><th>Categoria</th><th>Status</th><th>Ações</th></tr></thead>
@@ -129,7 +131,7 @@
         </section>
 
         <section id="dash" class="section">
-            <h2>Métricas da Cidade</h2>
+            <h2>Indicadores de Solução</h2>
             <div class="card"><canvas id="mainChart"></canvas></div>
         </section>
     </main>
@@ -179,14 +181,13 @@
                     categoria: cat, descricao: desc, status: "Aberto", data: new Date().toISOString()
                 });
                 
-                // Animação de Sucesso
                 const overlay = document.getElementById('success-overlay');
                 overlay.style.display = 'flex';
                 setTimeout(() => {
                     overlay.style.display = 'none';
                     document.getElementById('descricao').value = "";
                     show('feed');
-                }, 1800);
+                }, 2000);
             } catch(e) { console.error(e); }
         };
 
@@ -203,7 +204,8 @@
                                 <span class="badge status-${d.status.toLowerCase()}">${d.status}</span>
                                 <b>${d.categoria}</b>
                             </div>
-                            <p style="margin-top:10px;">${d.descricao}</p>
+                            <p style="margin-top:10px; line-height: 1.4;">${d.descricao}</p>
+                            <div style="margin-top: 10px; font-size: 0.8rem; opacity: 0.6;">❤️ Curtir · 💬 Comentar</div>
                         </div>`;
                 });
             });
@@ -220,7 +222,7 @@
                             <td style="padding:12px;">${d.categoria}</td>
                             <td style="padding:12px;"><span class="badge status-${d.status.toLowerCase()}">${d.status}</span></td>
                             <td style="padding:12px;">
-                                ${d.status === 'Aberto' ? `<button class="btn" style="padding:5px; font-size:0.7rem; background:var(--success)" onclick="updateDoc(doc(db, 'denuncias', '${documento.id}'), {status: 'Resolvido'})">Resolver</button>` : '---'}
+                                ${d.status === 'Aberto' ? `<button class="btn" style="padding:5px; font-size:0.7rem; background:var(--success)" onclick="updateDoc(doc(db, 'denuncias', '${documento.id}'), {status: 'Resolvido'})">Resolver</button>` : 'Finalizado'}
                             </td>
                         </tr>`;
                 });
@@ -230,10 +232,10 @@
         function renderChart() {
             const ctx = document.getElementById('mainChart').getContext('2d');
             new Chart(ctx, {
-                type: 'bar',
+                type: 'doughnut',
                 data: {
-                    labels: ['Jan', 'Fev', 'Mar'],
-                    datasets: [{ label: 'Denúncias', data: [12, 19, 3], backgroundColor: '#6366f1' }]
+                    labels: ['Abertas', 'Resolvidas'],
+                    datasets: [{ data: [12, 25], backgroundColor: ['#6366f1', '#10b981'], borderWidth: 0 }]
                 }
             });
         }
