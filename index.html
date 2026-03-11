@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GovFlow | EniacGov</title>
+    <title>GovFlow | EniacGov Community</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
@@ -20,7 +20,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: #e0e7ff; min-height: 100vh; display: flex; overflow: hidden; color: var(--text); }
 
-        /* Liquid Background Blobs */
+        /* Liquid Background */
         .blob-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: blur(60px); }
         .blob { position: absolute; width: 400px; height: 400px; background: linear-gradient(135deg, #6366f1, #a855f7); border-radius: 50%; opacity: 0.5; animation: move 20s infinite alternate; }
         .blob:nth-child(2) { background: #3b82f6; right: -50px; top: -50px; animation-duration: 25s; }
@@ -40,26 +40,35 @@
             padding: 2.5rem; overflow-y: auto;
         }
 
+        /* Seções */
         .section { display: none; }
         .section.active { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* Cards e Botões */
         .card { background: rgba(255, 255, 255, 0.3); border: 1px solid var(--glass-border); border-radius: 18px; padding: 1.5rem; margin-bottom: 1.2rem; }
-        .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 12px; cursor: pointer; font-weight: 600; width: 100%; transition: 0.3s; }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3); }
+        .btn { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 600; width: 100%; transition: 0.3s; }
         
         input, select, textarea { background: rgba(255, 255, 255, 0.6); border: 1px solid var(--glass-border); padding: 14px; border-radius: 12px; width: 100%; margin: 8px 0; outline: none; }
 
         .nav-link { padding: 12px; border-radius: 12px; margin-bottom: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 10px; }
         .nav-link.active { background: var(--primary); color: white; }
 
-        .admin-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        .admin-table th { text-align: left; padding: 12px; opacity: 0.7; font-size: 0.8rem; }
-        .admin-table td { padding: 12px; border-top: 1px solid var(--glass-border); font-size: 0.9rem; }
-        
-        .badge { font-size: 0.65rem; padding: 4px 8px; border-radius: 8px; font-weight: 700; }
+        /* Status Badges */
+        .badge { font-size: 0.65rem; padding: 4px 8px; border-radius: 8px; font-weight: 700; text-transform: uppercase; }
         .status-aberto { background: #fee2e2; color: #991b1b; }
         .status-resolvido { background: #dcfce7; color: #166534; }
+
+        /* Animação de Sucesso */
+        #success-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(99, 102, 241, 0.9); display: none;
+            justify-content: center; align-items: center; z-index: 999;
+            flex-direction: column; color: white; animation: fadeIn 0.3s;
+        }
+        .checkmark { width: 80px; height: 80px; border-radius: 50%; display: block; stroke-width: 2; stroke: #fff; stroke-miterlimit: 10; box-shadow: inset 0px 0px 0px #fff; animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both; }
+
+        @keyframes fill { 100% { box-shadow: inset 0px 0px 0px 40px #10b981; } }
 
         @media (max-width: 768px) {
             body { flex-direction: column; }
@@ -72,52 +81,57 @@
 </head>
 <body>
 
+    <div id="success-overlay">
+        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"><circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/><path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/></svg>
+        <h2 style="margin-top: 20px;">Relato Enviado!</h2>
+    </div>
+
     <div class="blob-container"><div class="blob"></div><div class="blob"></div></div>
 
     <aside class="sidebar">
         <h2 style="margin-bottom: 2rem; color: var(--primary);">EniacGov</h2>
         <div class="nav-link active" onclick="show('feed', this)"><span>📋</span><p>Mural</p></div>
         <div class="nav-link" onclick="show('new', this)"><span>✍️</span><p>Relatar</p></div>
-        <div class="nav-link" onclick="show('dash', this)"><span>📊</span><p>Dashboard</p></div>
+        <div class="nav-link" onclick="show('dash', this)"><span>📊</span><p>Dados</p></div>
         <div id="adm-nav" class="nav-link" style="color: var(--danger); display: none;" onclick="show('admin', this)"><span>🛡️</span><p>Painel ADM</p></div>
     </aside>
 
     <main class="main-content">
         <section id="auth" class="section active">
             <div style="max-width: 400px; margin: 60px auto; text-align: center;">
-                <h1>Bem-vindo</h1>
-                <p style="opacity: 0.7; margin-bottom: 2rem;">Acesse o sistema para interagir com sua cidade.</p>
-                <input type="email" id="loginEmail" placeholder="E-mail de acesso">
-                <button class="btn" onclick="handleLogin()">Entrar</button>
+                <h1>Portal Comunitário</h1>
+                <p style="opacity: 0.7; margin-bottom: 2rem;">Entre para visualizar e relatar problemas.</p>
+                <input type="email" id="emailInput" placeholder="E-mail">
+                <button class="btn" onclick="login()">Entrar</button>
             </div>
         </section>
 
         <section id="feed" class="section">
-            <h2 style="margin-bottom: 1.5rem;">Problemas da Comunidade</h2>
-            <div id="feedContent"></div>
+            <h2 style="margin-bottom: 1.5rem;">Mural da Cidade</h2>
+            <div id="feedList"></div>
         </section>
 
         <section id="new" class="section">
             <div class="card">
-                <h2>Registrar Ocorrência</h2><br>
-                <select id="categoria">
+                <h2>Novo Relato</h2><br>
+                <select id="probCat">
                     <option>Iluminação Pública</option>
                     <option>Saneamento Básico</option>
                     <option>Limpeza Urbana</option>
                     <option>Mobilidade Urbana</option>
                     <option>Saúde</option>
                 </select>
-                <textarea id="descricao" rows="5" placeholder="Descreva o problema detalhadamente..."></textarea>
-                <button class="btn" onclick="createComplaint()">Publicar Denúncia</button>
+                <textarea id="probDesc" rows="5" placeholder="Descreva o problema para todos verem..."></textarea>
+                <button class="btn" onclick="saveComplaint()">Registrar no Mural</button>
             </div>
         </section>
 
         <section id="admin" class="section">
-            <h2>Gestão Governamental</h2>
+            <h2 style="margin-bottom: 1rem;">Gestão ADM</h2>
             <div class="card" style="overflow-x: auto;">
-                <table class="admin-table">
+                <table style="width: 100%; border-collapse: collapse;">
                     <thead>
-                        <tr>
+                        <tr style="text-align: left; font-size: 0.8rem; opacity: 0.7;">
                             <th>Categoria</th>
                             <th>Status</th>
                             <th>Ação</th>
@@ -129,18 +143,17 @@
         </section>
 
         <section id="dash" class="section">
-            <h2>Estatísticas Gerais</h2>
+            <h2>Transparência</h2>
             <div class="card">
-                <canvas id="mainChart"></canvas>
+                <canvas id="govChart"></canvas>
             </div>
         </section>
     </main>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-        // Credenciais fornecidas [cite: 1, 2]
         const firebaseConfig = {
             apiKey: "AIzaSyBw9b8OKK9OdJ5vyCvV0HzoyQGgHumvuCk",
             authDomain: "eniacgov.firebaseapp.com",
@@ -153,7 +166,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        const ADMIN_EMAIL = "pablo11ssous2@gmail.com";
+        const ADM_EMAIL = "pablo11ssousa2@gmail.com";
 
         window.show = (id, el) => {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -165,56 +178,56 @@
             if(id === 'dash') renderChart();
         };
 
-        window.handleLogin = () => {
-            const email = document.getElementById('loginEmail').value;
-            if(!email) return alert("Por favor, informe seu e-mail.");
+        window.login = () => {
+            const email = document.getElementById('emailInput').value.toLowerCase().trim();
+            if(!email) return alert("Insira um e-mail.");
             
-            if(email === ADMIN_EMAIL) {
+            if(email === ADM_EMAIL) {
                 document.getElementById('adm-nav').style.display = 'flex';
-                alert("Acesso Administrativo Liberado.");
+                alert("Modo Administrador Ativado.");
             }
             document.getElementById('auth').classList.remove('active');
             show('feed', document.querySelector('.nav-link'));
         };
 
-        window.createComplaint = async () => {
-            const cat = document.getElementById('categoria').value;
-            const desc = document.getElementById('descricao').value;
-            if(!desc) return alert("Descreva o problema.");
+        window.saveComplaint = async () => {
+            const cat = document.getElementById('probCat').value;
+            const desc = document.getElementById('probDesc').value;
+            if(!desc) return alert("Escreva uma descrição.");
 
             try {
                 await addDoc(collection(db, "denuncias"), {
-                    categoria: cat,
-                    descricao: desc,
-                    status: "Aberto",
-                    data: new Date().toISOString(),
-                    likes: 0
+                    categoria: cat, descricao: desc, status: "Aberto", data: new Date().toISOString(), likes: 0
                 });
-                alert("Denúncia enviada com sucesso!");
-                show('feed');
-            } catch(e) { console.error("Erro Firebase: ", e); }
-        };
-
-        window.resolveComplaint = async (id) => {
-            try {
-                await updateDoc(doc(db, "denuncias", id), { status: "Resolvido" });
+                
+                // Animação de Sucesso
+                const overlay = document.getElementById('success-overlay');
+                overlay.style.display = 'flex';
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    document.getElementById('probDesc').value = "";
+                    show('feed');
+                }, 2000);
             } catch(e) { console.error(e); }
         };
 
         function listenFeed() {
-            const container = document.getElementById('feedContent');
-            onSnapshot(collection(db, "denuncias"), (snap) => {
+            const container = document.getElementById('feedList');
+            const q = query(collection(db, "denuncias"), orderBy("data", "desc"));
+            onSnapshot(q, (snap) => {
                 container.innerHTML = "";
                 snap.forEach(doc => {
                     const d = doc.data();
                     container.innerHTML += `
                         <div class="card">
-                            <div style="display:flex; justify-content:space-between">
-                                <b>${d.categoria}</b>
-                                <span class="badge status-${d.status.toLowerCase()}">${d.status}</span>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span class="badge status-${d.status.toLowerCase()}">${d.status} ${d.status === 'Resolvido' ? '✅' : ''}</span>
+                                <small style="font-weight:700; color:var(--primary)">${d.categoria}</small>
                             </div>
-                            <p style="margin: 10px 0;">${d.descricao}</p>
-                            <small style="opacity:0.6">👍 ${d.likes} curtidas</small>
+                            <p style="margin: 15px 0; line-height: 1.5;">${d.descricao}</p>
+                            <div style="display:flex; gap:15px; font-size:0.8rem; opacity:0.6;">
+                                <span>❤️ Curtir</span> <span>💬 Comentar</span>
+                            </div>
                         </div>`;
                 });
             });
@@ -227,11 +240,11 @@
                 snap.forEach(documento => {
                     const d = documento.data();
                     body.innerHTML += `
-                        <tr>
-                            <td>${d.categoria}</td>
-                            <td><span class="badge status-${d.status.toLowerCase()}">${d.status}</span></td>
-                            <td>
-                                ${d.status === 'Aberto' ? `<button class="btn" style="padding:5px; font-size:0.7rem; background:var(--success)" onclick="resolveComplaint('${documento.id}')">Resolver</button>` : '---'}
+                        <tr style="border-top: 1px solid var(--glass-border);">
+                            <td style="padding:12px;">${d.categoria}</td>
+                            <td style="padding:12px;"><span class="badge status-${d.status.toLowerCase()}">${d.status}</span></td>
+                            <td style="padding:12px;">
+                                ${d.status === 'Aberto' ? `<button class="btn" style="padding:5px 10px; font-size:0.7rem; background:var(--success)" onclick="updateDoc(doc(db, 'denuncias', '${documento.id}'), {status: 'Resolvido'})">Resolver</button>` : '---'}
                             </td>
                         </tr>`;
                 });
@@ -239,17 +252,14 @@
         }
 
         function renderChart() {
-            const ctx = document.getElementById('mainChart').getContext('2d');
+            const ctx = document.getElementById('govChart').getContext('2d');
             new Chart(ctx, {
-                type: 'bar',
+                type: 'doughnut',
                 data: {
-                    labels: ['Jan', 'Fev', 'Mar'],
-                    datasets: [
-                        { label: 'Abertas', data: [15, 22, 10], backgroundColor: '#6366f1' },
-                        { label: 'Fechadas', data: [8, 12, 18], backgroundColor: '#10b981' }
-                    ]
+                    labels: ['Abertas', 'Resolvidas'],
+                    datasets: [{ data: [14, 25], backgroundColor: ['#6366f1', '#10b981'], borderWidth: 0 }]
                 },
-                options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+                options: { plugins: { legend: { position: 'bottom' } } }
             });
         }
     </script>
