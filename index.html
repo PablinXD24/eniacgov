@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GovFlow | EniacGov Community</title>
+    <title>GovFlow | Mural Comunitário</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
         :root {
             --primary: #6366f1;
-            --danger: #ef4444;
             --success: #10b981;
+            --danger: #ef4444;
             --glass: rgba(255, 255, 255, 0.45);
             --glass-border: rgba(255, 255, 255, 0.6);
             --text: #1e293b;
@@ -40,12 +40,10 @@
             padding: 2.5rem; overflow-y: auto;
         }
 
-        /* Seções */
         .section { display: none; }
         .section.active { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Cards e Botões */
         .card { background: rgba(255, 255, 255, 0.3); border: 1px solid var(--glass-border); border-radius: 18px; padding: 1.5rem; margin-bottom: 1.2rem; }
         .btn { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 600; width: 100%; transition: 0.3s; }
         
@@ -54,21 +52,16 @@
         .nav-link { padding: 12px; border-radius: 12px; margin-bottom: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 10px; }
         .nav-link.active { background: var(--primary); color: white; }
 
-        /* Status Badges */
-        .badge { font-size: 0.65rem; padding: 4px 8px; border-radius: 8px; font-weight: 700; text-transform: uppercase; }
-        .status-aberto { background: #fee2e2; color: #991b1b; }
-        .status-resolvido { background: #dcfce7; color: #166534; }
-
         /* Animação de Sucesso */
         #success-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(99, 102, 241, 0.9); display: none;
-            justify-content: center; align-items: center; z-index: 999;
-            flex-direction: column; color: white; animation: fadeIn 0.3s;
+            background: rgba(99, 102, 241, 0.95); display: none;
+            justify-content: center; align-items: center; z-index: 1000;
+            flex-direction: column; color: white;
         }
-        .checkmark { width: 80px; height: 80px; border-radius: 50%; display: block; stroke-width: 2; stroke: #fff; stroke-miterlimit: 10; box-shadow: inset 0px 0px 0px #fff; animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both; }
-
-        @keyframes fill { 100% { box-shadow: inset 0px 0px 0px 40px #10b981; } }
+        .badge { font-size: 0.7rem; padding: 4px 8px; border-radius: 8px; font-weight: 700; text-transform: uppercase; }
+        .status-aberto { background: #fee2e2; color: #991b1b; }
+        .status-resolvido { background: #dcfce7; color: #166534; }
 
         @media (max-width: 768px) {
             body { flex-direction: column; }
@@ -82,14 +75,15 @@
 <body>
 
     <div id="success-overlay">
-        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"><circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/><path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/></svg>
-        <h2 style="margin-top: 20px;">Relato Enviado!</h2>
+        <h1 style="font-size: 4rem;">✅</h1>
+        <h2>Denúncia Registrada!</h2>
+        <p>Seu relato agora está no mural comunitário.</p>
     </div>
 
     <div class="blob-container"><div class="blob"></div><div class="blob"></div></div>
 
     <aside class="sidebar">
-        <h2 style="margin-bottom: 2rem; color: var(--primary);">EniacGov</h2>
+        <h2 style="margin-bottom: 2rem; color: var(--primary);">GovFlow</h2>
         <div class="nav-link active" onclick="show('feed', this)"><span>📋</span><p>Mural</p></div>
         <div class="nav-link" onclick="show('new', this)"><span>✍️</span><p>Relatar</p></div>
         <div class="nav-link" onclick="show('dash', this)"><span>📊</span><p>Dados</p></div>
@@ -99,54 +93,44 @@
     <main class="main-content">
         <section id="auth" class="section active">
             <div style="max-width: 400px; margin: 60px auto; text-align: center;">
-                <h1>Portal Comunitário</h1>
-                <p style="opacity: 0.7; margin-bottom: 2rem;">Entre para visualizar e relatar problemas.</p>
-                <input type="email" id="emailInput" placeholder="E-mail">
-                <button class="btn" onclick="login()">Entrar</button>
+                <h1>Acesso</h1>
+                <input type="email" id="userEmail" placeholder="Digite seu e-mail">
+                <button class="btn" style="margin-top: 10px;" onclick="handleLogin()">Entrar no Sistema</button>
             </div>
         </section>
 
         <section id="feed" class="section">
-            <h2 style="margin-bottom: 1.5rem;">Mural da Cidade</h2>
+            <h2 style="margin-bottom: 1.5rem;">Mural Comunitário</h2>
             <div id="feedList"></div>
         </section>
 
         <section id="new" class="section">
             <div class="card">
-                <h2>Novo Relato</h2><br>
-                <select id="probCat">
+                <h2>Relatar Problema</h2>
+                <select id="categoria">
                     <option>Iluminação Pública</option>
                     <option>Saneamento Básico</option>
                     <option>Limpeza Urbana</option>
                     <option>Mobilidade Urbana</option>
-                    <option>Saúde</option>
                 </select>
-                <textarea id="probDesc" rows="5" placeholder="Descreva o problema para todos verem..."></textarea>
-                <button class="btn" onclick="saveComplaint()">Registrar no Mural</button>
+                <textarea id="descricao" rows="5" placeholder="Descreva o problema para a comunidade..."></textarea>
+                <button class="btn" onclick="sendComplaint()">Enviar Denúncia</button>
             </div>
         </section>
 
         <section id="admin" class="section">
-            <h2 style="margin-bottom: 1rem;">Gestão ADM</h2>
+            <h2>Gestão Governamental</h2>
             <div class="card" style="overflow-x: auto;">
                 <table style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr style="text-align: left; font-size: 0.8rem; opacity: 0.7;">
-                            <th>Categoria</th>
-                            <th>Status</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody id="adminTableBody"></tbody>
+                    <thead><tr style="text-align: left; opacity: 0.6;"><th>Categoria</th><th>Status</th><th>Ações</th></tr></thead>
+                    <tbody id="adminBody"></tbody>
                 </table>
             </div>
         </section>
 
         <section id="dash" class="section">
-            <h2>Transparência</h2>
-            <div class="card">
-                <canvas id="govChart"></canvas>
-            </div>
+            <h2>Métricas da Cidade</h2>
+            <div class="card"><canvas id="mainChart"></canvas></div>
         </section>
     </main>
 
@@ -165,7 +149,6 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-
         const ADM_EMAIL = "pablo11ssousa2@gmail.com";
 
         window.show = (id, el) => {
@@ -178,26 +161,22 @@
             if(id === 'dash') renderChart();
         };
 
-        window.login = () => {
-            const email = document.getElementById('emailInput').value.toLowerCase().trim();
-            if(!email) return alert("Insira um e-mail.");
-            
-            if(email === ADM_EMAIL) {
-                document.getElementById('adm-nav').style.display = 'flex';
-                alert("Modo Administrador Ativado.");
-            }
+        window.handleLogin = () => {
+            const email = document.getElementById('userEmail').value.toLowerCase().trim();
+            if(!email) return alert("Insira um e-mail");
+            if(email === ADM_EMAIL) document.getElementById('adm-nav').style.display = 'flex';
             document.getElementById('auth').classList.remove('active');
             show('feed', document.querySelector('.nav-link'));
         };
 
-        window.saveComplaint = async () => {
-            const cat = document.getElementById('probCat').value;
-            const desc = document.getElementById('probDesc').value;
-            if(!desc) return alert("Escreva uma descrição.");
+        window.sendComplaint = async () => {
+            const cat = document.getElementById('categoria').value;
+            const desc = document.getElementById('descricao').value;
+            if(!desc) return alert("Descreva o problema");
 
             try {
                 await addDoc(collection(db, "denuncias"), {
-                    categoria: cat, descricao: desc, status: "Aberto", data: new Date().toISOString(), likes: 0
+                    categoria: cat, descricao: desc, status: "Aberto", data: new Date().toISOString()
                 });
                 
                 // Animação de Sucesso
@@ -205,9 +184,9 @@
                 overlay.style.display = 'flex';
                 setTimeout(() => {
                     overlay.style.display = 'none';
-                    document.getElementById('probDesc').value = "";
+                    document.getElementById('descricao').value = "";
                     show('feed');
-                }, 2000);
+                }, 1800);
             } catch(e) { console.error(e); }
         };
 
@@ -221,30 +200,27 @@
                     container.innerHTML += `
                         <div class="card">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span class="badge status-${d.status.toLowerCase()}">${d.status} ${d.status === 'Resolvido' ? '✅' : ''}</span>
-                                <small style="font-weight:700; color:var(--primary)">${d.categoria}</small>
+                                <span class="badge status-${d.status.toLowerCase()}">${d.status}</span>
+                                <b>${d.categoria}</b>
                             </div>
-                            <p style="margin: 15px 0; line-height: 1.5;">${d.descricao}</p>
-                            <div style="display:flex; gap:15px; font-size:0.8rem; opacity:0.6;">
-                                <span>❤️ Curtir</span> <span>💬 Comentar</span>
-                            </div>
+                            <p style="margin-top:10px;">${d.descricao}</p>
                         </div>`;
                 });
             });
         }
 
         function listenAdmin() {
-            const body = document.getElementById('adminTableBody');
+            const body = document.getElementById('adminBody');
             onSnapshot(collection(db, "denuncias"), (snap) => {
                 body.innerHTML = "";
                 snap.forEach(documento => {
                     const d = documento.data();
                     body.innerHTML += `
-                        <tr style="border-top: 1px solid var(--glass-border);">
+                        <tr style="border-top:1px solid var(--glass-border);">
                             <td style="padding:12px;">${d.categoria}</td>
                             <td style="padding:12px;"><span class="badge status-${d.status.toLowerCase()}">${d.status}</span></td>
                             <td style="padding:12px;">
-                                ${d.status === 'Aberto' ? `<button class="btn" style="padding:5px 10px; font-size:0.7rem; background:var(--success)" onclick="updateDoc(doc(db, 'denuncias', '${documento.id}'), {status: 'Resolvido'})">Resolver</button>` : '---'}
+                                ${d.status === 'Aberto' ? `<button class="btn" style="padding:5px; font-size:0.7rem; background:var(--success)" onclick="updateDoc(doc(db, 'denuncias', '${documento.id}'), {status: 'Resolvido'})">Resolver</button>` : '---'}
                             </td>
                         </tr>`;
                 });
@@ -252,14 +228,13 @@
         }
 
         function renderChart() {
-            const ctx = document.getElementById('govChart').getContext('2d');
+            const ctx = document.getElementById('mainChart').getContext('2d');
             new Chart(ctx, {
-                type: 'doughnut',
+                type: 'bar',
                 data: {
-                    labels: ['Abertas', 'Resolvidas'],
-                    datasets: [{ data: [14, 25], backgroundColor: ['#6366f1', '#10b981'], borderWidth: 0 }]
-                },
-                options: { plugins: { legend: { position: 'bottom' } } }
+                    labels: ['Jan', 'Fev', 'Mar'],
+                    datasets: [{ label: 'Denúncias', data: [12, 19, 3], backgroundColor: '#6366f1' }]
+                }
             });
         }
     </script>
