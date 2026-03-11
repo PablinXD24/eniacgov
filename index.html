@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GovFlow | EniacGov</title>
+    <title>GovFlow | Gestão Urbana</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
@@ -17,16 +17,14 @@
             --text: #1e293b;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: #e0e7ff; min-height: 100vh; display: flex; overflow: hidden; color: var(--text); }
 
         /* Liquid Background */
         .blob-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: blur(60px); }
         .blob { position: absolute; width: 400px; height: 400px; background: linear-gradient(135deg, #6366f1, #a855f7); border-radius: 50%; opacity: 0.5; animation: move 20s infinite alternate; }
-        .blob:nth-child(2) { background: #3b82f6; right: -50px; top: -50px; animation-duration: 25s; }
-        @keyframes move { from { transform: translate(0, 0); } to { transform: translate(80px, 80px); } }
-
-        /* Sidebar & Content */
+        
+        /* Layout */
         .sidebar {
             width: 280px; height: 95vh; margin: 2.5vh 20px;
             background: var(--glass); backdrop-filter: blur(25px);
@@ -37,77 +35,80 @@
             flex: 1; height: 95vh; margin: 2.5vh 20px 2.5vh 0;
             background: var(--glass); backdrop-filter: blur(25px);
             border: 1px solid var(--glass-border); border-radius: 24px;
-            padding: 2.5rem; overflow-y: auto;
+            padding: 2.5rem; overflow-y: auto; position: relative;
         }
 
         .section { display: none; }
         .section.active { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Cards */
-        .card { background: rgba(255, 255, 255, 0.3); border: 1px solid var(--glass-border); border-radius: 18px; padding: 1.5rem; margin-bottom: 1.2rem; }
+        /* Componentes */
+        .card { background: rgba(255, 255, 255, 0.3); border: 1px solid var(--glass-border); border-radius: 18px; padding: 1.5rem; margin-bottom: 1.2rem; transition: 0.3s; }
         .btn { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 600; width: 100%; transition: 0.3s; }
+        .btn:hover { opacity: 0.9; transform: scale(1.02); }
+        .btn-sm { padding: 6px 12px; font-size: 0.8rem; width: auto; }
         
         input, select, textarea { background: rgba(255, 255, 255, 0.6); border: 1px solid var(--glass-border); padding: 14px; border-radius: 12px; width: 100%; margin: 8px 0; outline: none; }
 
-        .nav-link { padding: 12px; border-radius: 12px; margin-bottom: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .nav-link { padding: 12px; border-radius: 12px; margin-bottom: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 10px; color: #475569; }
         .nav-link.active { background: var(--primary); color: white; }
-
-        /* Animação de Sucesso */
-        #success-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(99, 102, 241, 0.95); display: none;
-            justify-content: center; align-items: center; z-index: 1000;
-            flex-direction: column; color: white;
-        }
 
         .badge { font-size: 0.7rem; padding: 4px 8px; border-radius: 8px; font-weight: 700; text-transform: uppercase; }
         .status-aberto { background: #fee2e2; color: #991b1b; }
         .status-resolvido { background: #dcfce7; color: #166534; }
 
+        .interaction-bar { display: flex; gap: 15px; margin-top: 15px; font-size: 0.9rem; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 10px; }
+        .interaction-btn { cursor: pointer; display: flex; align-items: center; gap: 5px; opacity: 0.7; }
+        .interaction-btn:hover { opacity: 1; color: var(--primary); }
+
+        /* Overlay de Login */
+        #login-screen {
+            position: fixed; inset: 0; background: #e0e7ff; z-index: 2000;
+            display: flex; align-items: center; justify-content: center;
+        }
+
         @media (max-width: 768px) {
             body { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; position: fixed; bottom: 0; left: 0; margin: 0; border-radius: 24px 24px 0 0; padding: 10px; flex-direction: row; justify-content: space-around; }
-            .sidebar h2 { display: none; }
-            .main-content { margin: 10px; height: calc(100vh - 100px); padding: 1.5rem; }
-            .nav-link p { display: none; }
+            .sidebar { width: 100%; height: auto; position: fixed; bottom: 0; left: 0; margin: 0; border-radius: 24px 24px 0 0; flex-direction: row; justify-content: space-around; padding: 10px; }
+            .sidebar h2, .nav-link p { display: none; }
+            .main-content { margin: 10px; height: calc(100vh - 80px); }
         }
     </style>
 </head>
 <body>
 
-    <div id="success-overlay">
-        <h1 style="font-size: 5rem; margin-bottom: 10px;">✅</h1>
-        <h2>Relato Enviado com Sucesso!</h2>
+    <div id="login-screen">
+        <div class="card" style="width: 100%; max-width: 400px; text-align: center; background: white;">
+            <h1 style="color: var(--primary); margin-bottom: 1rem;">GovFlow</h1>
+            <p style="margin-bottom: 1.5rem; opacity: 0.7;">Acesse para relatar e acompanhar denúncias </p>
+            <input type="text" id="userName" placeholder="Seu Nome">
+            <input type="email" id="userEmail" placeholder="Seu E-mail">
+            <button class="btn" onclick="app.handleLogin()">Entrar</button>
+        </div>
     </div>
 
-    <div class="blob-container"><div class="blob"></div><div class="blob"></div></div>
+    <div class="blob-container"><div class="blob"></div></div>
 
     <aside class="sidebar">
-        <h2 style="margin-bottom: 2rem; color: var(--primary);">EniacGov</h2>
-        <div class="nav-link active" onclick="show('feed', this)"><span>📋</span><p>Mural</p></div>
-        <div class="nav-link" onclick="show('new', this)"><span>✍️</span><p>Relatar</p></div>
-        <div class="nav-link" onclick="show('dash', this)"><span>📊</span><p>Dados</p></div>
-        <div id="adm-nav" class="nav-link" style="color: var(--danger); display: none;" onclick="show('admin', this)"><span>🛡️</span><p>ADM</p></div>
+        <h2 style="margin-bottom: 2rem; color: var(--primary);">GovFlow</h2>
+        <div class="nav-link active" onclick="app.show('feed', this)"><span>📋</span><p>Mural</p></div>
+        <div class="nav-link" onclick="app.show('new', this)"><span>✍️</span><p>Relatar</p></div>
+        <div class="nav-link" onclick="app.show('dash', this)"><span>📊</span><p>Dashboard</p></div>
+        <div id="adm-nav" class="nav-link" style="color: var(--danger); display: none;" onclick="app.show('admin', this)"><span>🛡️</span><p>Gestão ADM</p></div>
+        <div class="nav-link" style="margin-top: auto; opacity: 0.5;" onclick="location.reload()"><span>🚪</span><p>Sair</p></div>
     </aside>
 
     <main class="main-content">
-        <section id="auth" class="section active">
-            <div style="max-width: 400px; margin: 60px auto; text-align: center;">
-                <h1>Bem-vindo</h1>
-                <input type="email" id="userEmail" placeholder="Digite seu e-mail">
-                <button class="btn" style="margin-top: 15px;" onclick="handleLogin()">Acessar Mural</button>
-            </div>
-        </section>
-
-        <section id="feed" class="section">
-            <h2 style="margin-bottom: 1.5rem;">Mural Comunitário</h2>
+        <section id="feed" class="section active">
+            <h2 style="margin-bottom: 1.5rem;">Mural da Comunidade </h2>
             <div id="feedList"></div>
         </section>
 
         <section id="new" class="section">
             <div class="card">
-                <h2>Novo Relato</h2>
+                <h2>Registrar Ocorrência [cite: 1, 2]</h2>
+                <p style="margin-bottom: 1rem; font-size: 0.9rem; opacity: 0.7;">Relate problemas de iluminação, buracos, saneamento e mais.</p>
+                <label>Categoria:</label>
                 <select id="categoria">
                     <option>Iluminação Pública</option>
                     <option>Saneamento Básico</option>
@@ -115,31 +116,47 @@
                     <option>Mobilidade Urbana</option>
                     <option>Saúde</option>
                 </select>
-                <textarea id="descricao" rows="5" placeholder="Descreva o problema para a comunidade..."></textarea>
-                <button class="btn" onclick="sendComplaint()">Publicar Denúncia</button>
+                <textarea id="descricao" rows="5" placeholder="Detalhes do problema..."></textarea>
+                <button class="btn" onclick="app.sendComplaint()">Publicar Denúncia</button>
             </div>
         </section>
 
         <section id="admin" class="section">
-            <h2>Painel de Gestão ADM</h2>
-            <div class="card" style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse;">
-                    <thead><tr style="text-align: left; opacity: 0.6;"><th>Categoria</th><th>Status</th><th>Ações</th></tr></thead>
+            <h2>Gestão de Demandas (ADM) </h2>
+            <div class="card" style="overflow-x: auto; padding: 0;">
+                <table style="width: 100%; border-collapse: collapse; min-width: 500px;">
+                    <thead style="background: rgba(0,0,0,0.03);">
+                        <tr style="text-align: left;">
+                            <th style="padding: 15px;">Data</th>
+                            <th>Categoria</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
                     <tbody id="adminBody"></tbody>
                 </table>
             </div>
         </section>
 
         <section id="dash" class="section">
-            <h2>Indicadores de Solução</h2>
-            <div class="card"><canvas id="mainChart"></canvas></div>
+            <h2>Indicadores de Desempenho </h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div class="card">
+                    <h3>Status Geral</h3>
+                    <canvas id="mainChart"></canvas>
+                </div>
+                <div class="card" id="stats-summary">
+                    <h3>Resumo</h3>
+                    </div>
+            </div>
         </section>
     </main>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, updateDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, doc, onSnapshot, query, orderBy, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+        // Configuração Firebase (Mantenha a sua conforme o arquivo original)
         const firebaseConfig = {
             apiKey: "AIzaSyBw9b8OKK9OdJ5vyCvV0HzoyQGgHumvuCk",
             authDomain: "eniacgov.firebaseapp.com",
@@ -149,96 +166,158 @@
             appId: "1:588502032266:web:dbf67fc89d54806bd47273"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const fireApp = initializeApp(firebaseConfig);
+        const db = getFirestore(fireApp);
         const ADM_EMAIL = "pablo11ssousa2@gmail.com";
 
-        window.show = (id, el) => {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            if(el) el.classList.add('active');
-            if(id === 'feed') listenFeed();
-            if(id === 'admin') listenAdmin();
-            if(id === 'dash') renderChart();
-        };
+        // Namespace do App para funções globais
+        window.app = {
+            user: null,
+            chart: null,
 
-        window.handleLogin = () => {
-            const email = document.getElementById('userEmail').value.toLowerCase().trim();
-            if(!email) return alert("Insira um e-mail");
-            if(email === ADM_EMAIL) document.getElementById('adm-nav').style.display = 'flex';
-            document.getElementById('auth').classList.remove('active');
-            show('feed', document.querySelector('.nav-link'));
-        };
-
-        window.sendComplaint = async () => {
-            const cat = document.getElementById('categoria').value;
-            const desc = document.getElementById('descricao').value;
-            if(!desc) return alert("Descreva o problema");
-
-            try {
-                await addDoc(collection(db, "denuncias"), {
-                    categoria: cat, descricao: desc, status: "Aberto", data: new Date().toISOString()
-                });
+            handleLogin: () => {
+                const name = document.getElementById('userName').value.trim();
+                const email = document.getElementById('userEmail').value.toLowerCase().trim();
                 
-                const overlay = document.getElementById('success-overlay');
-                overlay.style.display = 'flex';
-                setTimeout(() => {
-                    overlay.style.display = 'none';
-                    document.getElementById('descricao').value = "";
-                    show('feed');
-                }, 2000);
-            } catch(e) { console.error(e); }
-        };
-
-        function listenFeed() {
-            const container = document.getElementById('feedList');
-            const q = query(collection(db, "denuncias"), orderBy("data", "desc"));
-            onSnapshot(q, (snap) => {
-                container.innerHTML = "";
-                snap.forEach(doc => {
-                    const d = doc.data();
-                    container.innerHTML += `
-                        <div class="card">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span class="badge status-${d.status.toLowerCase()}">${d.status}</span>
-                                <b>${d.categoria}</b>
-                            </div>
-                            <p style="margin-top:10px; line-height: 1.4;">${d.descricao}</p>
-                            <div style="margin-top: 10px; font-size: 0.8rem; opacity: 0.6;">❤️ Curtir · 💬 Comentar</div>
-                        </div>`;
-                });
-            });
-        }
-
-        function listenAdmin() {
-            const body = document.getElementById('adminBody');
-            onSnapshot(collection(db, "denuncias"), (snap) => {
-                body.innerHTML = "";
-                snap.forEach(documento => {
-                    const d = documento.data();
-                    body.innerHTML += `
-                        <tr style="border-top:1px solid var(--glass-border);">
-                            <td style="padding:12px;">${d.categoria}</td>
-                            <td style="padding:12px;"><span class="badge status-${d.status.toLowerCase()}">${d.status}</span></td>
-                            <td style="padding:12px;">
-                                ${d.status === 'Aberto' ? `<button class="btn" style="padding:5px; font-size:0.7rem; background:var(--success)" onclick="updateDoc(doc(db, 'denuncias', '${documento.id}'), {status: 'Resolvido'})">Resolver</button>` : 'Finalizado'}
-                            </td>
-                        </tr>`;
-                });
-            });
-        }
-
-        function renderChart() {
-            const ctx = document.getElementById('mainChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Abertas', 'Resolvidas'],
-                    datasets: [{ data: [12, 25], backgroundColor: ['#6366f1', '#10b981'], borderWidth: 0 }]
+                if(!name || !email) return alert("Preencha todos os campos para acessar ");
+                
+                app.user = { name, email, isAdmin: email === ADM_EMAIL };
+                
+                if(app.user.isAdmin) {
+                    document.getElementById('adm-nav').style.display = 'flex';
                 }
-            });
-        }
+                
+                document.getElementById('login-screen').style.display = 'none';
+                app.show('feed');
+            },
+
+            show: (id, el) => {
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+                document.getElementById(id).classList.add('active');
+                if(el) el.classList.add('active');
+                
+                if(id === 'feed') app.listenFeed();
+                if(id === 'admin') app.listenAdmin();
+                if(id === 'dash') app.renderDashboard();
+            },
+
+            sendComplaint: async () => {
+                const cat = document.getElementById('categoria').value;
+                const desc = document.getElementById('descricao').value;
+                if(!desc) return alert("Descreva o problema");
+
+                try {
+                    await addDoc(collection(db, "denuncias"), {
+                        autor: app.user.name,
+                        categoria: cat,
+                        descricao: desc,
+                        status: "Aberto",
+                        curtidas: 0,
+                        data: new Date().toISOString(),
+                        mes: new Date().getMonth() + 1
+                    });
+                    
+                    alert("Relato enviado com sucesso! [cite: 1]");
+                    document.getElementById('descricao').value = "";
+                    app.show('feed');
+                } catch(e) { console.error(e); }
+            },
+
+            listenFeed: () => {
+                const container = document.getElementById('feedList');
+                const q = query(collection(db, "denuncias"), orderBy("data", "desc"));
+                onSnapshot(q, (snap) => {
+                    container.innerHTML = "";
+                    snap.forEach(res => {
+                        const d = res.data();
+                        const dataFormatada = new Date(d.data).toLocaleDateString('pt-BR');
+                        container.innerHTML += `
+                            <div class="card">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+                                    <span class="badge status-${d.status.toLowerCase()}">${d.status}</span>
+                                    <small>${dataFormatada}</small>
+                                </div>
+                                <h4 style="color: var(--primary);">${d.categoria}</h4>
+                                <p style="margin: 10px 0; line-height: 1.5; font-size: 0.95rem;">${d.descricao}</p>
+                                <p style="font-size: 0.8rem; opacity: 0.6;">Enviado por: ${d.autor}</p>
+                                <div class="interaction-bar">
+                                    <div class="interaction-btn" onclick="app.like('${res.id}')">❤️ <span>${d.curtidas || 0}</span> Curtir</div>
+                                    <div class="interaction-btn">💬 Comentar </div>
+                                </div>
+                            </div>`;
+                    });
+                });
+            },
+
+            like: async (id) => {
+                const docRef = doc(db, "denuncias", id);
+                await updateDoc(docRef, { curtidas: increment(1) });
+            },
+
+            listenAdmin: () => {
+                if(!app.user.isAdmin) return;
+                const body = document.getElementById('adminBody');
+                onSnapshot(collection(db, "denuncias"), (snap) => {
+                    body.innerHTML = "";
+                    snap.forEach(documento => {
+                        const d = documento.data();
+                        body.innerHTML += `
+                            <tr style="border-top:1px solid rgba(0,0,0,0.05);">
+                                <td style="padding:15px; font-size: 0.8rem;">${new Date(d.data).toLocaleDateString()}</td>
+                                <td>${d.categoria}</td>
+                                <td><span class="badge status-${d.status.toLowerCase()}">${d.status}</span></td>
+                                <td>
+                                    ${d.status === 'Aberto' ? 
+                                    `<button class="btn btn-sm" style="background:var(--success)" onclick="app.resolve('${documento.id}')">Resolver</button>` : 
+                                    '<span style="font-size: 0.8rem; color: var(--success);">Finalizado</span>'}
+                                </td>
+                            </tr>`;
+                    });
+                });
+            },
+
+            resolve: async (id) => {
+                await updateDoc(doc(db, "denuncias", id), { status: 'Resolvido' }); [cite: 4]
+            },
+
+            renderDashboard: () => {
+                onSnapshot(collection(db, "denuncias"), (snap) => {
+                    let abertos = 0;
+                    let resolvidos = 0;
+                    snap.forEach(d => {
+                        if(d.data().status === 'Aberto') abertos++;
+                        else resolvidos++;
+                    });
+
+                    // Atualiza Texto
+                    document.getElementById('stats-summary').innerHTML = `
+                        <h3>Resumo Global</h3>
+                        <div style="margin-top:20px;">
+                            <p>Total de Relatos: <b>${abertos + resolvidos}</b></p>
+                            <p style="color: var(--danger)">Pendentes: <b>${abertos}</b></p>
+                            <p style="color: var(--success)">Solucionados: <b>${resolvidos}</b></p>
+                        </div>
+                    `;
+
+                    // Atualiza Gráfico 
+                    const ctx = document.getElementById('mainChart').getContext('2d');
+                    if(app.chart) app.chart.destroy();
+                    app.chart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Abertos', 'Resolvidos'],
+                            datasets: [{
+                                data: [abertos, resolvidos],
+                                backgroundColor: ['#ef4444', '#10b981'],
+                                borderWidth: 0
+                            }]
+                        },
+                        options: { plugins: { legend: { position: 'bottom' } } }
+                    });
+                });
+            }
+        };
     </script>
 </body>
 </html>
